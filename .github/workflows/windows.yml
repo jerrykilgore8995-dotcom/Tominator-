@@ -1,0 +1,19 @@
+name: Tominator Windows VST3
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S . -B build -A x64
+      - name: Compile VST3
+        run: cmake --build build --config Release --target Tominator_VST3 --parallel 4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Tominator-Windows-x64-VST3
+          path: build/Tominator_artefacts/Release/VST3/
+          if-no-files-found: error
