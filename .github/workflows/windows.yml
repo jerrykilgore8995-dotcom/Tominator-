@@ -17,3 +17,16 @@ jobs:
           name: Tominator-Windows-x64-VST3
           path: build/Tominator_artefacts/Release/VST3/
           if-no-files-found: error
+      - name: Build screenshot host
+        run: cmake --build build --config Release --target TominatorCapture --parallel 4
+      - name: Capture actual plugin editor
+        shell: pwsh
+        run: |
+          $plugin = (Resolve-Path "build/Tominator_artefacts/Release/VST3/Tominator.vst3").Path
+          & "build/TominatorCapture_artefacts/Release/TominatorCapture.exe" $plugin "Tominator-GUI.png"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Tominator-GUI
+          path: Tominator-GUI.png
+          if-no-files-found: error
